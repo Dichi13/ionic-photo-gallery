@@ -10,7 +10,7 @@ import {
   IonTabs
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { images, square, triangle } from 'ionicons/icons';
+import { images, map, triangle } from 'ionicons/icons';
 import Tab1 from './pages/Tabs/Tab1';
 import Tab2 from './pages/Tabs/Tab2';
 import Tab3 from './pages/Tabs/Tab3';
@@ -59,8 +59,8 @@ const DefaultRoutes: React.FC<RouteComponentProps> = ({match}) => (
             <IonLabel>Photos</IonLabel>
           </IonTabButton>
           <IonTabButton tab="tab3" href={`${match.url}/tab3`}>
-            <IonIcon icon={square} />
-            <IonLabel>Tab 3</IonLabel>
+            <IonIcon icon={map} />
+            <IonLabel>Maps</IonLabel>
           </IonTabButton>
         </IonTabBar>
       </IonTabs>

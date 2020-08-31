@@ -8,7 +8,7 @@ import {
   IonLabel,
   IonMenuToggle, IonListHeader
 } from '@ionic/react';
-import { images, square, triangle, cog, person } from 'ionicons/icons';
+import { images, map, triangle, cog, person } from 'ionicons/icons';
 import {useLocation} from "react-router";
 import "./Menu.css";
 
@@ -24,9 +24,9 @@ const pages = [
     icon: images,
   },
   {
-    title: 'Tab 3',
+    title: 'Maps',
     url: '/page/tab3',
-    icon: square,
+    icon: map,
   }
 ];
 
