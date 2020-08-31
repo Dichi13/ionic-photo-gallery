@@ -12,6 +12,7 @@ import {
 import './Account.css';
 import {AppContext} from "store/Core";
 import {userActionType} from "store/reducers/UserReducer";
+import { useHistory } from "react-router-dom";
 
 const Account: React.FC = () => {
   const {state, dispatch} = useContext(AppContext);
@@ -20,6 +21,7 @@ const Account: React.FC = () => {
     age,
     emailAddress
   } = state.user;
+  const history = useHistory();
 
   function handleInput(e: any) {
     let value = e.detail.value;
@@ -29,6 +31,11 @@ const Account: React.FC = () => {
       value = parseInt(value);
 
     dispatch({type, value});
+  }
+
+  function logOut() {
+    dispatch({type: userActionType.logOut});
+    history.push("/login");
   }
 
   return (
@@ -57,6 +64,10 @@ const Account: React.FC = () => {
         <IonItemDivider>Contact Data</IonItemDivider>
         <IonItem>
           <IonInput value={emailAddress} name={userActionType.setEmailAddress} type="email" placeholder="Enter your email address" onIonChange={e => handleInput(e)}/>
+        </IonItem>
+        <IonItemDivider/>
+        <IonItem button onClick={() => logOut()}>
+          <IonLabel color="danger">Log Out</IonLabel>
         </IonItem>
       </IonContent>
     </IonPage>

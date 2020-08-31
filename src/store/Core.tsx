@@ -4,7 +4,7 @@ import {reducer} from "./Reducer";
 
 interface IContextProps {
   state: any;
-  dispatch: ({type, value}:{type:string, value:any}) => void;
+  dispatch: ({type, value}:{type:string, value?:any}) => void;
 }
 
 const AppContext = createContext({} as IContextProps);

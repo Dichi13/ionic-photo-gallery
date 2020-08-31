@@ -7,7 +7,7 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-  IonItemDivider, IonItem, IonList, IonRadioGroup, IonListHeader, IonLabel, IonRadio, IonRange
+  IonItemDivider, IonItem, IonList, IonRadioGroup, IonLabel, IonRadio, IonRange
 } from '@ionic/react';
 import './Preferences.css';
 import {AppContext} from "store/Core";

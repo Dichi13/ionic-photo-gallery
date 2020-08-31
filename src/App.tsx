@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {Redirect, Route, RouteComponentProps} from 'react-router-dom';
 import {
   IonApp, IonContent,
@@ -14,6 +14,7 @@ import { images, map, triangle } from 'ionicons/icons';
 import Tab1 from './pages/Tabs/Tab1';
 import Tab2 from './pages/Tabs/Tab2';
 import Tab3 from './pages/Tabs/Tab3';
+import Login from './pages/Login';
 import Menu from './components/Menu';
 import Preferences from './pages/Preferences';
 import Account from './pages/Account/Account';
@@ -37,7 +38,8 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './App.css';
 import './theme/variables.css';
-import {AppContextProvider} from "./store/Core";
+import { AppContext, AppContextProvider } from "store/Core";
+import hasLoggedIn from "utilities/auth";
 
 const DefaultRoutes: React.FC<RouteComponentProps> = ({match}) => (
   <IonSplitPane contentId="main">
@@ -68,15 +70,28 @@ const DefaultRoutes: React.FC<RouteComponentProps> = ({match}) => (
   </IonSplitPane>
 );
 
+const AuthedRoute: React.FC<any> = ({component: Component, ...rest}) => {
+  const { state } = useContext(AppContext);
+  const isLoggedIn = hasLoggedIn(state);
+
+  return (
+    <Route
+      {...rest}
+      render={props => isLoggedIn ? <Component {...props}/> : <Redirect to="/login"/>}
+    />
+  )
+}
+
 const App: React.FC = () => (
   <AppContextProvider>
     <IonApp>
       <IonReactRouter>
         <IonRouterOutlet>
-          <Route path="/preferences" component={Preferences} exact />
-          <Route path="/account" component={Account} exact />
-          <Route path="/page" component={DefaultRoutes}/>
-          <Redirect from="/" to="/page/tab1" exact/>
+          <AuthedRoute path="/preferences" component={Preferences} exact />
+          <AuthedRoute path="/account" component={Account} exact />
+          <AuthedRoute path="/page" component={DefaultRoutes}/>
+          <Route path="/login" component={Login} exact />
+          <Redirect from="/" to="/login" exact/>
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>
