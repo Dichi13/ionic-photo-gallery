@@ -7,7 +7,7 @@ import {
   IonRouterOutlet, IonSplitPane,
   IonTabBar,
   IonTabButton,
-  IonTabs
+  IonTabs, useIonViewDidEnter, useIonViewDidLeave
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { images, map, triangle } from 'ionicons/icons';
@@ -38,37 +38,46 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './App.css';
 import './theme/variables.css';
+
+/* Etc */
 import { AppContext, AppContextProvider } from "store/Core";
 import hasLoggedIn from "utilities/auth";
+import { useBackButtonAsExit } from "hooks/useBackButtonAsExit";
 
-const DefaultRoutes: React.FC<RouteComponentProps> = ({match}) => (
-  <IonSplitPane contentId="main">
-    <Menu/>
-    <IonContent id="main">
-      <IonTabs>
-        <IonRouterOutlet>
-          <Route path={`${match.url}/:tab(tab1)`} component={Tab1} exact/>
-          <Route path={`${match.url}/:tab(tab2)`} component={Tab2} exact/>
-          <Route path={`${match.url}/:tab(tab3)`} component={Tab3} exact/>
-        </IonRouterOutlet>
-        <IonTabBar slot="bottom">
-          <IonTabButton tab="tab1" href={`${match.url}/tab1`}>
-            <IonIcon icon={triangle} />
-            <IonLabel>Tab 1</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tab2" href={`${match.url}/tab2`}>
-            <IonIcon icon={images} />
-            <IonLabel>Photos</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tab3" href={`${match.url}/tab3`}>
-            <IonIcon icon={map} />
-            <IonLabel>Maps</IonLabel>
-          </IonTabButton>
-        </IonTabBar>
-      </IonTabs>
-    </IonContent>
-  </IonSplitPane>
-);
+const DefaultRoutes: React.FC<RouteComponentProps> = ({match}) => {
+  const { didEnter, didLeave } = useBackButtonAsExit();
+  useIonViewDidEnter(didEnter);
+  useIonViewDidLeave(didLeave);
+
+  return (
+    <IonSplitPane contentId="main">
+      <Menu/>
+      <IonContent id="main">
+        <IonTabs>
+          <IonRouterOutlet>
+            <Route path={`${match.url}/:tab(tab1)`} component={Tab1} exact/>
+            <Route path={`${match.url}/:tab(tab2)`} component={Tab2} exact/>
+            <Route path={`${match.url}/:tab(tab3)`} component={Tab3} exact/>
+          </IonRouterOutlet>
+          <IonTabBar slot="bottom">
+            <IonTabButton tab="tab1" href={`${match.url}/tab1`}>
+              <IonIcon icon={triangle}/>
+              <IonLabel>Tab 1</IonLabel>
+            </IonTabButton>
+            <IonTabButton tab="tab2" href={`${match.url}/tab2`}>
+              <IonIcon icon={images}/>
+              <IonLabel>Photos</IonLabel>
+            </IonTabButton>
+            <IonTabButton tab="tab3" href={`${match.url}/tab3`}>
+              <IonIcon icon={map}/>
+              <IonLabel>Maps</IonLabel>
+            </IonTabButton>
+          </IonTabBar>
+        </IonTabs>
+      </IonContent>
+    </IonSplitPane>
+  )
+};
 
 const AuthedRoute: React.FC<any> = ({component: Component, ...rest}) => {
   const { state } = useContext(AppContext);
@@ -82,20 +91,22 @@ const AuthedRoute: React.FC<any> = ({component: Component, ...rest}) => {
   )
 }
 
-const App: React.FC = () => (
-  <AppContextProvider>
-    <IonApp>
-      <IonReactRouter>
-        <IonRouterOutlet>
-          <AuthedRoute path="/preferences" component={Preferences} exact />
-          <AuthedRoute path="/account" component={Account} exact />
-          <AuthedRoute path="/page" component={DefaultRoutes}/>
-          <Route path="/login" component={Login} exact />
-          <Redirect from="/" to="/login" exact/>
-        </IonRouterOutlet>
-      </IonReactRouter>
-    </IonApp>
-  </AppContextProvider>
-);
+const App: React.FC = () => {
+  return (
+    <AppContextProvider>
+      <IonApp>
+        <IonReactRouter>
+          <IonRouterOutlet>
+            <Redirect from="/" to="/login" exact/>
+            <Route path="/login" component={Login} exact/>
+            <AuthedRoute path="/preferences" component={Preferences} exact/>
+            <AuthedRoute path="/account" component={Account} exact/>
+            <AuthedRoute path="/page" component={DefaultRoutes}/>
+          </IonRouterOutlet>
+        </IonReactRouter>
+      </IonApp>
+    </AppContextProvider>
+  )
+};
 
 export default App;

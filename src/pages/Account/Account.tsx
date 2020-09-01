@@ -1,18 +1,11 @@
-import React, {useContext} from 'react';
+import React, { useContext } from 'react';
 import {
-  IonButtons,
-  IonContent,
-  IonHeader,
-  IonBackButton,
-  IonPage,
-  IonTitle,
-  IonToolbar,
+  IonButtons, IonContent, IonHeader, IonBackButton, IonPage, IonTitle, IonToolbar,
   IonItemDivider, IonItem, IonInput, IonLabel
 } from '@ionic/react';
 import './Account.css';
 import {AppContext} from "store/Core";
 import {userActionType} from "store/reducers/UserReducer";
-import { useHistory } from "react-router-dom";
 
 const Account: React.FC = () => {
   const {state, dispatch} = useContext(AppContext);
@@ -21,7 +14,6 @@ const Account: React.FC = () => {
     age,
     emailAddress
   } = state.user;
-  const history = useHistory();
 
   function handleInput(e: any) {
     let value = e.detail.value;
@@ -35,7 +27,6 @@ const Account: React.FC = () => {
 
   function logOut() {
     dispatch({type: userActionType.logOut});
-    history.push("/login");
   }
 
   return (
@@ -66,7 +57,7 @@ const Account: React.FC = () => {
           <IonInput value={emailAddress} name={userActionType.setEmailAddress} type="email" placeholder="Enter your email address" onIonChange={e => handleInput(e)}/>
         </IonItem>
         <IonItemDivider/>
-        <IonItem button onClick={() => logOut()}>
+        <IonItem button onClick={() => logOut()} href="/login">
           <IonLabel color="danger">Log Out</IonLabel>
         </IonItem>
       </IonContent>

@@ -7,7 +7,7 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-  IonItemDivider, IonItem, IonList, IonRadioGroup, IonLabel, IonRadio, IonRange
+  IonItemDivider, IonItem, IonRadioGroup, IonLabel, IonRadio, IonRange
 } from '@ionic/react';
 import './Preferences.css';
 import {AppContext} from "store/Core";
@@ -40,33 +40,37 @@ const Preferences: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonList>
-          <IonRadioGroup value={alignment} name={preferencesActionType.setAlignment} onIonChange={e => handleInput(e)}>
-            <IonItemDivider>Alignment settings</IonItemDivider>
-            <IonItem>
-              <IonLabel>Front</IonLabel>
-              <IonRadio slot="start" value="front" />
-            </IonItem>
-
-            <IonItem>
-              <IonLabel>Center</IonLabel>
-              <IonRadio slot="start" value="center" />
-            </IonItem>
-
-            <IonItem>
-              <IonLabel>Back</IonLabel>
-              <IonRadio slot="start" value="back" />
-            </IonItem>
-          </IonRadioGroup>
-
-          <IonItemDivider>Random volume slider</IonItemDivider>
+        <IonRadioGroup value={alignment} name={preferencesActionType.setAlignment} onIonChange={e => handleInput(e)}>
+          <IonItemDivider>Alignment settings</IonItemDivider>
           <IonItem>
-            <IonRange pin min={0} max={100} color="secondary" value={volume} name={preferencesActionType.setVolume} onIonChange={e => handleInput(e)}>
-              <IonLabel slot="start">0</IonLabel>
-              <IonLabel slot="end">100</IonLabel>
-            </IonRange>
+            <IonLabel>Front</IonLabel>
+            <IonRadio slot="start" value="front" />
           </IonItem>
-        </IonList>
+
+          <IonItem>
+            <IonLabel>Center</IonLabel>
+            <IonRadio slot="start" value="center" />
+          </IonItem>
+
+          <IonItem>
+            <IonLabel>Back</IonLabel>
+            <IonRadio slot="start" value="back" />
+          </IonItem>
+        </IonRadioGroup>
+
+        <IonItemDivider>Random volume slider</IonItemDivider>
+        <IonItem>
+          <IonRange pin min={0} max={100} color="secondary" value={volume} name={preferencesActionType.setVolume} onIonChange={e => handleInput(e)}>
+            <IonLabel slot="start">0</IonLabel>
+            <IonLabel slot="end">100</IonLabel>
+          </IonRange>
+        </IonItem>
+        <IonItemDivider>Debug routerLink items</IonItemDivider>
+        <IonItem routerLink="/page/tab1">/page/tab1</IonItem>
+        <IonItem routerLink="/page/tab2">/page/tab2</IonItem>
+        <IonItem routerLink="/page/tab3">/page/tab3</IonItem>
+        <IonItem routerLink="/account">/account</IonItem>
+        <IonItem routerLink="/login">/login (caution, buggy route)</IonItem>
       </IonContent>
     </IonPage>
   );
