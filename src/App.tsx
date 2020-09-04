@@ -1,17 +1,15 @@
-import React, { useContext } from 'react';
-import {Redirect, Route, RouteComponentProps} from 'react-router-dom';
+import React, { useContext, useEffect } from 'react';
+import { Redirect, Route as RouterRoute, RouteComponentProps } from 'react-router-dom';
 import {
-  IonApp, IonContent,
-  IonIcon,
-  IonLabel,
-  IonRouterOutlet, IonSplitPane,
-  IonTabBar,
-  IonTabButton,
-  IonTabs, useIonViewDidEnter, useIonViewDidLeave
+  IonApp, IonContent, IonIcon, IonLabel, IonRouterOutlet, IonSplitPane,
+  IonTabBar, IonTabButton, IonTabs, useIonViewDidEnter, useIonViewDidLeave
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { images, map, triangle } from 'ionicons/icons';
-import Tab1 from './pages/Tabs/Tab1';
+import ReactGA from "utilities/analytics";
+
+/* Route components */
+import Tab1 from './pages/Tabs/Home';
 import Tab2 from './pages/Tabs/Tab2';
 import Tab3 from './pages/Tabs/Tab3';
 import Login from './pages/Login';
@@ -55,9 +53,9 @@ const DefaultRoutes: React.FC<RouteComponentProps> = ({match}) => {
       <IonContent id="main">
         <IonTabs>
           <IonRouterOutlet>
-            <Route path={`${match.url}/:tab(tab1)`} component={Tab1} exact/>
-            <Route path={`${match.url}/:tab(tab2)`} component={Tab2} exact/>
-            <Route path={`${match.url}/:tab(tab3)`} component={Tab3} exact/>
+            <Route path={`${match.url}/tab1`} component={Tab1} exact trackAnalytics/>
+            <Route path={`${match.url}/tab2`} component={Tab2} exact trackAnalytics/>
+            <Route path={`${match.url}/tab3`} component={Tab3} exact trackAnalytics/>
           </IonRouterOutlet>
           <IonTabBar slot="bottom">
             <IonTabButton tab="tab1" href={`${match.url}/tab1`}>
@@ -79,14 +77,21 @@ const DefaultRoutes: React.FC<RouteComponentProps> = ({match}) => {
   )
 };
 
-const AuthedRoute: React.FC<any> = ({component: Component, ...rest}) => {
+const Route: React.FC<any> = ({component: Component, authed, trackAnalytics, ...rest}) => {
   const { state } = useContext(AppContext);
   const isLoggedIn = hasLoggedIn(state);
 
+  useEffect(() => {
+    if (trackAnalytics && rest.path === window.location.pathname) {
+      const path = window.location.pathname + window.location.search;
+      ReactGA.pageview(path);
+    }
+  }, [window.location.pathname]);
+
   return (
-    <Route
+    <RouterRoute
       {...rest}
-      render={props => isLoggedIn ? <Component {...props}/> : <Redirect to="/login"/>}
+      render={(props: any) => (!authed || isLoggedIn) ? <Component {...props}/> : <Redirect to="/login"/>}
     />
   )
 }
@@ -99,9 +104,9 @@ const App: React.FC = () => {
           <IonRouterOutlet>
             <Redirect from="/" to="/login" exact/>
             <Route path="/login" component={Login} exact/>
-            <AuthedRoute path="/preferences" component={Preferences} exact/>
-            <AuthedRoute path="/account" component={Account} exact/>
-            <AuthedRoute path="/page" component={DefaultRoutes}/>
+            <Route path="/preferences" component={Preferences} exact authed trackAnalytics/>
+            <Route path="/account" component={Account} exact authed trackAnalytics/>
+            <Route path="/page" component={DefaultRoutes} authed/>
           </IonRouterOutlet>
         </IonReactRouter>
       </IonApp>

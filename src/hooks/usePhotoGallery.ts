@@ -4,6 +4,7 @@ import {base64FromPath, useFilesystem} from '@ionic/react-hooks/filesystem';
 import {CameraPhoto, CameraResultType, CameraSource, Capacitor, FilesystemDirectory} from "@capacitor/core";
 import {useStorage} from "@ionic/react-hooks/storage";
 import {isPlatform} from "@ionic/react";
+import ReactGA from "utilities/analytics";
 
 export interface Photo {
   filepath: string;
@@ -49,6 +50,8 @@ export function usePhotoGallery() {
     const savedFileImage = await savePicture(cameraPhoto, fileName);
     const newPhotos = [savedFileImage, ...photos];
     setPhotos(newPhotos);
+
+    ReactGA.event({category: "Photo", action: "Took a photo", label: fileName});
 
     set(PHOTO_STORAGE, isPlatform("hybrid")
       ? JSON.stringify(newPhotos)
@@ -104,12 +107,14 @@ export function usePhotoGallery() {
     set(PHOTO_STORAGE, JSON.stringify(newPhotos));
 
     // delete photo file from filesystem
-    const filename = photo.filepath.substr(photo.filepath.lastIndexOf('/') + 1);
+    const fileName = photo.filepath.substr(photo.filepath.lastIndexOf('/') + 1);
     await deleteFile({
-      path: filename,
+      path: fileName,
       directory: FilesystemDirectory.Data
     });
     setPhotos(newPhotos);
+
+    ReactGA.event({category: "Photo", action: "Deleted a photo", label: fileName});
   };
 
   return {

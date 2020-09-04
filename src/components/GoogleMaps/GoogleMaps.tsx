@@ -34,5 +34,5 @@ const GoogleMaps: React.FC<GoogleMapsProps> = ({ google }) => {
 };
 
 export default GoogleApiWrapper({
-  apiKey: ""
+  apiKey: process.env.REACT_APP_MAPS_API_KEY!
 })(GoogleMaps);
